@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -74,11 +76,19 @@ namespace Calculator
             clearButton.Click += new EventHandler(Button_Click);
             this.Controls.Add(clearButton);
 
+            //Button dotButton = new Button();
+            //dotButton.Text = ".";
+            //dotButton.Size = new Size(buttonWidth, buttonHeight);
+            //dotButton.Font = new Font(dotButton.Font.FontFamily, 30);
+            //dotButton.Location = new Point(startX + 1 * (buttonWidth + 10), startY + 4 * (buttonHeight + 10));
+            //dotButton.Click += new EventHandler(Button_Click);
+            //this.Controls.Add(dotButton);
+
             Label outputLabel = new Label();
             outputLabel.Text = "0";
             outputLabel.AutoSize = false;
             outputLabel.Size = new Size(10 * buttonWidth, 10 * buttonHeight);
-            outputLabel.Location = new Point(startX, startY - buttonHeight - 15);
+            outputLabel.Location = new Point(startX - 10, startY - buttonHeight - 15);
             outputLabel.Font = new Font(outputLabel.Font.FontFamily, 50);
             this.Controls.Add(outputLabel);
         }
@@ -99,7 +109,7 @@ namespace Calculator
                 {
                     outputLabel.Text = num.ToString();
 
-                    if(op == '1')
+                    if (op == '1')
                     {
                         num1 = num;
                         num2 = 0;
@@ -108,12 +118,12 @@ namespace Calculator
                     else if (op == '0')
                     {
                         num1 = num1 * 10 + num;
-                        outputLabel.Text = num1.ToString("N0");
+                        outputLabel.Text = num1.ToString("#,##0.###"); //("N0");
                     }
                     else
                     {
                         num2 = num2 * 10 + num;
-                        outputLabel.Text = num2.ToString("N0");
+                        outputLabel.Text = num2.ToString("#,##0.###"); //("N0");
                     }
                 }
 
@@ -126,25 +136,38 @@ namespace Calculator
 
             else if (button.Text == "=")
             {
-                string formattedResult;
-
-                if (Math.Abs(result) >= 10000000)
+                if (double.IsNaN(result))
                 {
-                    formattedResult = result.ToString("0.###E+0");
+                    outputLabel.Text = "Syntax Error";
                 }
+
                 else
                 {
-                    formattedResult = result.ToString("N0");
+                    string formattedResult;
+
+                    if (Math.Abs(result) >= 10000000)
+                    {
+                        formattedResult = result.ToString("0.###E+0");
+                    }
+                    else
+                    {
+                        formattedResult = result.ToString("#,##0.###");
+                    }
+                    outputLabel.Text = formattedResult;
+                    num1 = result;
+                    num2 = 0;
+                    op = '1';
                 }
-                outputLabel.Text = formattedResult;
-                num1 = result;
-                num2 = 0;
-                op = '1';
             }
 
             else if (button.Text == "C")
             {
                 ClearMemory();
+            }
+
+            else if (button.Text == ".")
+            {
+
             }
 
             void ClearMemory()
@@ -154,6 +177,9 @@ namespace Calculator
                 num2 = 0;
                 op = '0';
             }
+
+
+
 
         }
 
@@ -170,7 +196,16 @@ namespace Calculator
                 case 'x':
                     return num1 * num2;
                 case '/':
-                    return num1 / num2;
+                    if (num2 != 0)
+                    {
+                        return num1 / num2;
+                    }
+                    else
+                    {
+                        return double.NaN;
+                    }
+
+
                 default:
                     return num1;
             }
