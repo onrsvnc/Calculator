@@ -9,3 +9,14 @@ F:\Projects\Calculator\Calculator\obj\Debug\Calculator.csproj.CoreCompileInputs.
 F:\Projects\Calculator\Calculator\obj\Debug\Calculator.exe
 F:\Projects\Calculator\Calculator\obj\Debug\Calculator.pdb
 F:\Projects\Calculator\Calculator\obj\Debug\Calculator.Form1.resources
+C:\Users\Onur Sevinç 4ARC\Desktop\Calculator-master\Calculator\obj\Debug\Calculator.csproj.AssemblyReference.cache
+C:\Users\Onur Sevinç 4ARC\Desktop\Calculator-master\Calculator\obj\Debug\Calculator.csproj.SuggestedBindingRedirects.cache
+C:\Users\Onur Sevinç 4ARC\Desktop\Calculator-master\Calculator\obj\Debug\Calculator.Form1.resources
+C:\Users\Onur Sevinç 4ARC\Desktop\Calculator-master\Calculator\obj\Debug\Calculator.Properties.Resources.resources
+C:\Users\Onur Sevinç 4ARC\Desktop\Calculator-master\Calculator\obj\Debug\Calculator.csproj.GenerateResource.cache
+C:\Users\Onur Sevinç 4ARC\Desktop\Calculator-master\Calculator\obj\Debug\Calculator.csproj.CoreCompileInputs.cache
+C:\Users\Onur Sevinç 4ARC\Desktop\Calculator-master\Calculator\obj\Debug\Calculator.exe
+C:\Users\Onur Sevinç 4ARC\Desktop\Calculator-master\Calculator\obj\Debug\Calculator.pdb
+C:\Users\Onur Sevinç 4ARC\Desktop\Calculator-master\Calculator\bin\Debug\Calculator.exe.config
+C:\Users\Onur Sevinç 4ARC\Desktop\Calculator-master\Calculator\bin\Debug\Calculator.exe
+C:\Users\Onur Sevinç 4ARC\Desktop\Calculator-master\Calculator\bin\Debug\Calculator.pdb

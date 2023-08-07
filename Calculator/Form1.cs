@@ -15,9 +15,10 @@ namespace Calculator
 {
     public partial class Form1 : Form
     {
-        private double num1 = 0;
-        private double num2 = 0;
-        private char op = '0'; //Starting state
+        private double? num1 = null;
+        private double? num2 = null;
+        private char op = ' ';
+        private BindingList<string> history = new BindingList<string>();
 
 
         public Form1()
@@ -25,6 +26,8 @@ namespace Calculator
             InitializeComponent();
             CreateCalculatorButtons();
         }
+
+        #region Create Calculator Buttons
 
         private void CreateCalculatorButtons()
         {
@@ -76,14 +79,6 @@ namespace Calculator
             clearButton.Click += new EventHandler(Button_Click);
             this.Controls.Add(clearButton);
 
-            //Button dotButton = new Button();
-            //dotButton.Text = ".";
-            //dotButton.Size = new Size(buttonWidth, buttonHeight);
-            //dotButton.Font = new Font(dotButton.Font.FontFamily, 30);
-            //dotButton.Location = new Point(startX + 1 * (buttonWidth + 10), startY + 4 * (buttonHeight + 10));
-            //dotButton.Click += new EventHandler(Button_Click);
-            //this.Controls.Add(dotButton);
-
             Label outputLabel = new Label();
             outputLabel.Text = "0";
             outputLabel.AutoSize = false;
@@ -91,73 +86,81 @@ namespace Calculator
             outputLabel.Location = new Point(startX - 10, startY - buttonHeight - 15);
             outputLabel.Font = new Font(outputLabel.Font.FontFamily, 50);
             this.Controls.Add(outputLabel);
+
+
         }
+
+        #endregion
 
         private void Button_Click(object sender, EventArgs e)
         {
             Button button = sender as Button;
             Label outputLabel = this.Controls[Controls.Count - 1] as Label;
-            double result = CalculateResult();
 
             if (int.TryParse(button.Text, out int num))
             {
-
-                if (outputLabel.Text.Length >= 10)
-                    return;
-
+                if (num1 == null)
+                {
+                    num1 = num;
+                }
+                else if (op != ' ' && num2 == null)
+                {
+                    num2 = num;
+                }
+                else if (op == ' ')
+                {
+                    num1 = num1 * 10 + num;
+                }
                 else
                 {
-                    outputLabel.Text = num.ToString();
+                    num2 = num2 * 10 + num;
+                }
 
-                    if (op == '1')
-                    {
-                        num1 = num;
-                        num2 = 0;
-                        op = '0';
-                    }
-                    else if (op == '0')
-                    {
-                        num1 = num1 * 10 + num;
-                        outputLabel.Text = num1.ToString("#,##0.###"); //("N0");
-                    }
-                    else
-                    {
-                        num2 = num2 * 10 + num;
-                        outputLabel.Text = num2.ToString("#,##0.###"); //("N0");
-                    }
+                if (op == ' ')
+                {
+                    outputLabel.Text = num1?.ToString("#,##0.###");
+                }
+                else
+                {
+                    outputLabel.Text = num2?.ToString("#,##0.###");
                 }
 
             }
 
             else if (button.Text == "+" || button.Text == "-" || button.Text == "x" || button.Text == "/")
             {
-                op = button.Text[0];
+                if (op == '+' || op == '-' || op == '/' || op == 'x')
+                {
+                    CalculateResult(outputLabel);
+                }
+                else
+                {
+                    op = button.Text[0];
+                }
+
+                switch (button.Text)
+                {
+                    case "+":
+                        op = '+';
+                        break;
+                    case "-":
+                        op = '-';
+                        break;
+                    case "x":
+                        op = 'x';
+                        break;
+                    case "/":
+                        op = '/';
+                        break;
+                    default:
+                        break;
+                }
             }
 
             else if (button.Text == "=")
             {
-                if (double.IsNaN(result))
-                {
-                    outputLabel.Text = "Syntax Error";
-                }
+                CalculateResult(outputLabel);
 
-                else
-                {
-                    string formattedResult;
-
-                    if (Math.Abs(result) >= 10000000)
-                    {
-                        formattedResult = result.ToString("0.###E+0");
-                    }
-                    else
-                    {
-                        formattedResult = result.ToString("#,##0.###");
-                    }
-                    outputLabel.Text = formattedResult;
-                    num1 = result;
-                    num2 = 0;
-                    op = '1';
-                }
             }
 
             else if (button.Text == "C")
@@ -165,55 +168,92 @@ namespace Calculator
                 ClearMemory();
             }
 
-            else if (button.Text == ".")
-            {
-
-            }
-
             void ClearMemory()
             {
                 outputLabel.Text = "0";
                 num1 = 0;
                 num2 = 0;
-                op = '0';
             }
-
-
-
 
         }
 
+        private void CalculateResult(Label outputLabel)
+        {
+            double result = Calculation();
+            if (double.IsNaN(result))
+            {
+                outputLabel.Text = "Syntax Error";
+            }
+
+            else
+            {
+                string formattedResult;
+
+                if (Math.Abs(result) >= 10000000)
+                {
+                    formattedResult = result.ToString("0.###E+0");
+                }
+                else
+                {
+                    formattedResult = result.ToString("#,##0.###");
+                }
+
+                outputLabel.Text = formattedResult;
+
+                string previousCalc = $"{num1} {op} {num2} = {formattedResult}";
+                history.Add(previousCalc);
+                PopulateHistoryListBox();
+
+                num1 = result;
+                num2 = null;
+                op = ' ';
 
 
-        private double CalculateResult()
+            }
+        }
+
+        private double Calculation()
         {
             switch (op)
             {
                 case '+':
-                    return num1 + num2;
+                    return num1.Value + num2.Value;
                 case '-':
-                    return num1 - num2;
+                    return num1.Value - num2.Value;
                 case 'x':
-                    return num1 * num2;
+                    return num1.Value * num2.Value;
                 case '/':
                     if (num2 != 0)
                     {
-                        return num1 / num2;
+                        return num1.Value / num2.Value;
                     }
                     else
                     {
                         return double.NaN;
                     }
 
-
                 default:
-                    return num1;
+                    return num1.Value;
             }
         }
+
+        private void PopulateHistoryListBox()
+        {
+            listBox1.DataSource = history;
+        }
+
+
 
         private void Form1_Load(object sender, EventArgs e)
         {
 
         }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+
     }
 }
