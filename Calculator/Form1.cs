@@ -160,7 +160,6 @@ namespace Calculator
             else if (button.Text == "=")
             {
                 CalculateResult(outputLabel);
-
             }
 
             else if (button.Text == "C")
