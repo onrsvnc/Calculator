@@ -180,6 +180,8 @@ namespace Calculator
 
         private void CalculateResult(Label outputLabel)
         {
+            if(num1 == null || num2 == null) return;
+
             double result = Calculation();
             if (double.IsNaN(result))
             {
